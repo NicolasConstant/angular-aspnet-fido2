@@ -72,7 +72,8 @@ public class FidoController : Controller
             var options = _fido2.RequestNewCredential(new RequestNewCredentialParams { User = user, ExcludeCredentials = existingKeys, AuthenticatorSelection = authenticatorSelection, AttestationPreference = attType.ToEnum<AttestationConveyancePreference>(), Extensions = exts });
 
             // 4. Temporarily store options, session/in-memory cache/redis/db
-            HttpContext.Session.SetString("fido2.attestationOptions", options.ToJson());
+            //HttpContext.Session.SetString("fido2.attestationOptions", options.ToJson());
+            _cache = options;
 
             // 5. return options to client
             return Json(options);
@@ -83,6 +84,8 @@ public class FidoController : Controller
         }
     }
 
+    private static CredentialCreateOptions _cache; // Yes, don't use this in prod!
+
     [HttpPost]
     [Route("/makeCredential")]
     public async Task<JsonResult> MakeCredential([FromBody] AuthenticatorAttestationRawResponse attestationResponse, CancellationToken cancellationToken)
@@ -90,8 +93,9 @@ public class FidoController : Controller
         try
         {
             // 1. get the options we sent the client
-            var jsonOptions = HttpContext.Session.GetString("fido2.attestationOptions");
-            var options = CredentialCreateOptions.FromJson(jsonOptions);
+            //var jsonOptions = HttpContext.Session.GetString("fido2.attestationOptions");
+            //var options = CredentialCreateOptions.FromJson(jsonOptions);
+            var options = _cache;
 
             // 2. Create callback so that lib can verify credential id is unique to this user
             IsCredentialIdUniqueToUserAsyncDelegate callback = static async (args, cancellationToken) =>
@@ -170,7 +174,8 @@ public class FidoController : Controller
             });
 
             // 4. Temporarily store options, session/in-memory cache/redis/db
-            HttpContext.Session.SetString("fido2.assertionOptions", options.ToJson());
+            //HttpContext.Session.SetString("fido2.assertionOptions", options.ToJson());
+            _cacheGetAssertionOptions = options;
 
             // 5. Return options to client
             return Json(options);
@@ -182,6 +187,8 @@ public class FidoController : Controller
         }
     }
 
+    private static AssertionOptions _cacheGetAssertionOptions;
+
     [HttpPost]
     [Route("/makeAssertion")]
     public async Task<JsonResult> MakeAssertion([FromBody] AuthenticatorAssertionRawResponse clientResponse, CancellationToken cancellationToken)
@@ -189,8 +196,10 @@ public class FidoController : Controller
         try
         {
             // 1. Get the assertion options we sent the client
-            var jsonOptions = HttpContext.Session.GetString("fido2.assertionOptions");
-            var options = AssertionOptions.FromJson(jsonOptions);
+            //var jsonOptions = HttpContext.Session.GetString("fido2.assertionOptions");
+            //var options = AssertionOptions.FromJson(jsonOptions);
+
+            var options = _cacheGetAssertionOptions;
 
             // 2. Get registered credential from database
             var creds = DemoStorage.GetCredentialById(clientResponse.Id) ?? throw new Exception("Unknown credentials");

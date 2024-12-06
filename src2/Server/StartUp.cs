@@ -32,6 +32,7 @@ public class Startup
             // Set a short timeout for easy testing.
             options.IdleTimeout = TimeSpan.FromMinutes(2);
             options.Cookie.HttpOnly = true;
+            
             // Strict SameSite mode is required because the default mode used
             // by ASP.NET Core 3 isn't understood by the Conformance Tool
             // and breaks conformance testing

@@ -131,7 +131,7 @@ export class AppComponent {
 
     let makeAssertionOptions;
     try {
-      var res = await this.http.post<any>('/assertionOptions', formData);
+      var res = await this.http.post<any>(`${this.endpoint}/assertionOptions`, formData);
 
       //, {
       //  method: 'POST', // or 'PUT'
@@ -400,7 +400,7 @@ export class AppComponent {
   }
 
   async registerCredentialWithServer(formData: any) {
-    let result = await this.http.post<any>(`${this.endpoint}/makeCredentialOptions`, formData).toPromise();    
+    let result = await this.http.post<any>(`${this.endpoint}/makeCredential`, formData).toPromise();    
     return result;
 
     //let response = await fetch('/makeCredential', {
