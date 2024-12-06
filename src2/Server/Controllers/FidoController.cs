@@ -29,9 +29,9 @@ public class FidoController : Controller
     public JsonResult MakeCredentialOptions([FromForm] string username,
                                             [FromForm] string displayName,
                                             [FromForm] string attType,
-                                            [FromForm] string authType,
                                             [FromForm] string residentKey,
-                                            [FromForm] string userVerification)
+                                            [FromForm] string userVerification,
+                                            [FromForm] string authType = "")
     {
         try
         {

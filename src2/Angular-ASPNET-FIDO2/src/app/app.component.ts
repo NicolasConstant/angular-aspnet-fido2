@@ -228,16 +228,18 @@ export class AppComponent {
 
     let response;
     try {
-      let res = await fetch("/makeAssertion", {
-        method: 'POST', // or 'PUT'
-        body: JSON.stringify(data), // data can be `string` or {object}!
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
-        }
-      });
+      response = await this.http.post<any>(`${this.endpoint}/makeAssertion`, data).toPromise();    
 
-      response = await res.json();
+      //let res = await fetch("/makeAssertion", {
+      //  method: 'POST', // or 'PUT'
+      //  body: JSON.stringify(data), // data can be `string` or {object}!
+      //  headers: {
+      //    'Accept': 'application/json',
+      //    'Content-Type': 'application/json'
+      //  }
+      //});
+
+      //response = await res.json();
     } catch (e) {
       this.showErrorAlert("Request to server failed", e);
       throw e;
@@ -332,7 +334,10 @@ export class AppComponent {
   async fetchMakeCredentialOptions(formData: any) {
 
     console.log("tada");
-    return await this.http.post<any>('https://localhost:7079/makeCredentialOptions', formData).toPromise();
+    console.log(formData);
+    let result = await this.http.post<any>(`${this.endpoint}/makeCredentialOptions`, formData).toPromise();
+    console.log("toto");
+    return result;
 
     //let response = await fetch('/makeCredentialOptions', {
     //  method: 'POST', // or 'PUT'
@@ -395,17 +400,20 @@ export class AppComponent {
   }
 
   async registerCredentialWithServer(formData: any) {
-    let response = await fetch('/makeCredential', {
-      method: 'POST', // or 'PUT'
-      body: JSON.stringify(formData), // data can be `string` or {object}!
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      }
-    });
+    let result = await this.http.post<any>(`${this.endpoint}/makeCredentialOptions`, formData).toPromise();    
+    return result;
 
-    let data = await response.json();
+    //let response = await fetch('/makeCredential', {
+    //  method: 'POST', // or 'PUT'
+    //  body: JSON.stringify(formData), // data can be `string` or {object}!
+    //  headers: {
+    //    'Accept': 'application/json',
+    //    'Content-Type': 'application/json'
+    //  }
+    //});
 
-    return data;
+    //let data = await response.json();
+
+    //return data;
   }
 }

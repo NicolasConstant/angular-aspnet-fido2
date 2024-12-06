@@ -55,6 +55,14 @@ public class Startup
                 //TODO: any specific config you want for accessing the MDS
             });
         });
+
+
+        services.AddCors(o => o.AddPolicy("MyPolicy", builder =>
+        {
+            builder.AllowAnyOrigin()
+                .AllowAnyMethod()
+                .AllowAnyHeader();
+        }));
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -69,6 +77,8 @@ public class Startup
             app.UseExceptionHandler("/Error");
             app.UseRewriter(new RewriteOptions().AddRedirectToWWwIfPasswordlessDomain());
         }
+
+        app.UseCors("MyPolicy");
 
         app.UseSession();
         app.UseStaticFiles();
