@@ -17,6 +17,7 @@ interface WeatherForecast {
 export class AppComponent implements OnInit {
   public forecasts: WeatherForecast[] = [];
 
+  title = 'angular-aspnet-fido2.client';
   constructor(private http: HttpClient) { }
 
   ngOnInit() {
@@ -212,7 +213,6 @@ export class AppComponent implements OnInit {
     }
   }
 
-  title = 'angular-aspnet-fido2.client';
 
   showErrorAlert(message: string, error: any) {
     let footermsg = '';
